@@ -123,8 +123,8 @@ Jordan,https://www.cia.gov/the-world-factbook/countries/jordan/
 Kazakhstan,https://www.cia.gov/the-world-factbook/countries/kazakhstan/
 Kenya,https://www.cia.gov/the-world-factbook/countries/kenya/
 Kiribati,https://www.cia.gov/the-world-factbook/countries/kiribati/
-South Korea,https://www.cia.gov/the-world-factbook/countries/korea-north/
-South Korea,https://www.cia.gov/the-world-factbook/countries/korea-south/
+"Korea, North",https://www.cia.gov/the-world-factbook/countries/korea-north/
+"Korea, South",https://www.cia.gov/the-world-factbook/countries/korea-south/
 Kosovo,https://www.cia.gov/the-world-factbook/countries/kosovo/
 Kuwait,https://www.cia.gov/the-world-factbook/countries/kuwait/
 Kyrgyzstan,https://www.cia.gov/the-world-factbook/countries/kyrgyzstan/
@@ -141,6 +141,7 @@ Macau,https://www.cia.gov/the-world-factbook/countries/macau/
 Madagascar,https://www.cia.gov/the-world-factbook/countries/madagascar/
 Malawi,https://www.cia.gov/the-world-factbook/countries/malawi/
 Malaysia,https://www.cia.gov/the-world-factbook/countries/malaysia/
+Maldives,https://www.cia.gov/the-world-factbook/countries/maldives/
 Mali,https://www.cia.gov/the-world-factbook/countries/mali/
 Malta,https://www.cia.gov/the-world-factbook/countries/malta/
 Marshall Islands,https://www.cia.gov/the-world-factbook/countries/marshall-islands/
@@ -247,7 +248,6 @@ Vietnam,https://www.cia.gov/the-world-factbook/countries/vietnam/
 Virgin Islands,https://www.cia.gov/the-world-factbook/countries/virgin-islands/
 Wake Island,https://www.cia.gov/the-world-factbook/countries/wake-island/
 Wallis and Futuna,https://www.cia.gov/the-world-factbook/countries/wallis-and-futuna/
-West Bank,https://www.cia.gov/the-world-factbook/countries/west-bank/
 Yemen,https://www.cia.gov/the-world-factbook/countries/yemen/
 Zambia,https://www.cia.gov/the-world-factbook/countries/zambia/
 Zimbabwe,https://www.cia.gov/the-world-factbook/countries/zimbabwe/
