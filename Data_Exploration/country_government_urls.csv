@@ -16,7 +16,7 @@ Ashmore and Cartier Islands,https://www.cia.gov/the-world-factbook/countries/ash
 Australia,https://www.cia.gov/the-world-factbook/countries/australia/
 Austria,https://www.cia.gov/the-world-factbook/countries/austria/
 Azerbaijan,https://www.cia.gov/the-world-factbook/countries/azerbaijan/
-"Bahamas, The",https://www.cia.gov/the-world-factbook/countries/bahamas-the/
+Bahamas,https://www.cia.gov/the-world-factbook/countries/bahamas-the/
 Bahrain,https://www.cia.gov/the-world-factbook/countries/bahrain/
 Bangladesh,https://www.cia.gov/the-world-factbook/countries/bangladesh/
 Barbados,https://www.cia.gov/the-world-factbook/countries/barbados/
@@ -36,7 +36,6 @@ British Virgin Islands,https://www.cia.gov/the-world-factbook/countries/british-
 Brunei,https://www.cia.gov/the-world-factbook/countries/brunei/
 Bulgaria,https://www.cia.gov/the-world-factbook/countries/bulgaria/
 Burkina Faso,https://www.cia.gov/the-world-factbook/countries/burkina-faso/
-Burma,https://www.cia.gov/the-world-factbook/countries/burma/
 Burundi,https://www.cia.gov/the-world-factbook/countries/burundi/
 Cabo Verde,https://www.cia.gov/the-world-factbook/countries/cabo-verde/
 Cambodia,https://www.cia.gov/the-world-factbook/countries/cambodia/
@@ -53,7 +52,7 @@ Cocos (Keeling) Islands,https://www.cia.gov/the-world-factbook/countries/cocos-k
 Colombia,https://www.cia.gov/the-world-factbook/countries/colombia/
 Comoros,https://www.cia.gov/the-world-factbook/countries/comoros/
 Democratic Republic of the Congo,https://www.cia.gov/the-world-factbook/countries/congo-democratic-republic-of-the/
-"Congo, Republic of the",https://www.cia.gov/the-world-factbook/countries/congo-republic-of-the/
+Republic of the Congo,https://www.cia.gov/the-world-factbook/countries/congo-republic-of-the/
 Cook Islands,https://www.cia.gov/the-world-factbook/countries/cook-islands/
 Coral Sea Islands,https://www.cia.gov/the-world-factbook/countries/coral-sea-islands/
 Costa Rica,https://www.cia.gov/the-world-factbook/countries/costa-rica/
@@ -76,7 +75,6 @@ Eritrea,https://www.cia.gov/the-world-factbook/countries/eritrea/
 Estonia,https://www.cia.gov/the-world-factbook/countries/estonia/
 Eswatini,https://www.cia.gov/the-world-factbook/countries/eswatini/
 Ethiopia,https://www.cia.gov/the-world-factbook/countries/ethiopia/
-European Union,https://www.cia.gov/the-world-factbook/countries/european-union/
 Falkland Islands (Islas Malvinas),https://www.cia.gov/the-world-factbook/countries/falkland-islands-islas-malvinas/
 Faroe Islands,https://www.cia.gov/the-world-factbook/countries/faroe-islands/
 Fiji,https://www.cia.gov/the-world-factbook/countries/fiji/
@@ -85,7 +83,7 @@ France,https://www.cia.gov/the-world-factbook/countries/france/
 French Polynesia,https://www.cia.gov/the-world-factbook/countries/french-polynesia/
 French Southern and Antarctic Lands,https://www.cia.gov/the-world-factbook/countries/french-southern-and-antarctic-lands/
 Gabon,https://www.cia.gov/the-world-factbook/countries/gabon/
-"Gambia, The",https://www.cia.gov/the-world-factbook/countries/gambia-the/
+Gambia,https://www.cia.gov/the-world-factbook/countries/gambia-the/
 Gaza Strip,https://www.cia.gov/the-world-factbook/countries/gaza-strip/
 Georgia,https://www.cia.gov/the-world-factbook/countries/georgia/
 Germany,https://www.cia.gov/the-world-factbook/countries/germany/
@@ -123,8 +121,8 @@ Jordan,https://www.cia.gov/the-world-factbook/countries/jordan/
 Kazakhstan,https://www.cia.gov/the-world-factbook/countries/kazakhstan/
 Kenya,https://www.cia.gov/the-world-factbook/countries/kenya/
 Kiribati,https://www.cia.gov/the-world-factbook/countries/kiribati/
-"Korea, North",https://www.cia.gov/the-world-factbook/countries/korea-north/
-"Korea, South",https://www.cia.gov/the-world-factbook/countries/korea-south/
+North Korea,https://www.cia.gov/the-world-factbook/countries/korea-north/
+South Korea,https://www.cia.gov/the-world-factbook/countries/korea-south/
 Kosovo,https://www.cia.gov/the-world-factbook/countries/kosovo/
 Kuwait,https://www.cia.gov/the-world-factbook/countries/kuwait/
 Kyrgyzstan,https://www.cia.gov/the-world-factbook/countries/kyrgyzstan/
@@ -148,7 +146,7 @@ Marshall Islands,https://www.cia.gov/the-world-factbook/countries/marshall-islan
 Mauritania,https://www.cia.gov/the-world-factbook/countries/mauritania/
 Mauritius,https://www.cia.gov/the-world-factbook/countries/mauritius/
 Mexico,https://www.cia.gov/the-world-factbook/countries/mexico/
-"Micronesia, Federated States of",https://www.cia.gov/the-world-factbook/countries/micronesia-federated-states-of/
+Micronesia,https://www.cia.gov/the-world-factbook/countries/micronesia-federated-states-of/
 Moldova,https://www.cia.gov/the-world-factbook/countries/moldova/
 Monaco,https://www.cia.gov/the-world-factbook/countries/monaco/
 Mongolia,https://www.cia.gov/the-world-factbook/countries/mongolia/
@@ -156,6 +154,7 @@ Montenegro,https://www.cia.gov/the-world-factbook/countries/montenegro/
 Montserrat,https://www.cia.gov/the-world-factbook/countries/montserrat/
 Morocco,https://www.cia.gov/the-world-factbook/countries/morocco/
 Mozambique,https://www.cia.gov/the-world-factbook/countries/mozambique/
+Myanmar,https://www.cia.gov/the-world-factbook/countries/burma/
 Namibia,https://www.cia.gov/the-world-factbook/countries/namibia/
 Nauru,https://www.cia.gov/the-world-factbook/countries/nauru/
 Navassa Island,https://www.cia.gov/the-world-factbook/countries/navassa-island/
@@ -221,7 +220,7 @@ Svalbard,https://www.cia.gov/the-world-factbook/countries/svalbard/
 Sweden,https://www.cia.gov/the-world-factbook/countries/sweden/
 Switzerland,https://www.cia.gov/the-world-factbook/countries/switzerland/
 Syria,https://www.cia.gov/the-world-factbook/countries/syria/
-Taiwan,https://www.cia.gov/the-world-factbook/countries/taiwan/
+Taiwan (China),https://www.cia.gov/the-world-factbook/countries/taiwan/
 Tajikistan,https://www.cia.gov/the-world-factbook/countries/tajikistan/
 Tanzania,https://www.cia.gov/the-world-factbook/countries/tanzania/
 Thailand,https://www.cia.gov/the-world-factbook/countries/thailand/
