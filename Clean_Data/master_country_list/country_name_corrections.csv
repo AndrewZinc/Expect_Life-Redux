@@ -1,5 +1,6 @@
 wrong,correct
 "Bahamas, The",Bahamas
+Bolivia (Plurinational State of),Bolivia
 Brunei Darussalam,Brunei
 Burma,Myanmar
 Czechoslovakia,Czechia
@@ -7,14 +8,21 @@ Czech Republic,Czechia
 "Congo, Dem. Rep.",Democratic Republic of the Congo
 "Congo, Rep.",Congo
 Cote d'Ivoire,Côte d'Ivoire
+Côte d’Ivoire,Côte d'Ivoire
 "Egypt, Arab Rep.",Egypt
 "Gambia, The",Gambia
 "Hong Kong SAR, China",Hong Kong (China)
 "Iran, Islamic Rep.",Iran
+Iran (Islamic Republic of),Iran
 "Korea, Rep.",South Korea
+Republic of Korea,South Korea
 Kyrgyzstan,Kyrgyz Republic
 Lao PDR,Laos
+"Lao People's Democratic Republic",Laos
 "Micronesia, Fed. Sts.",Micronesia
+Micronesia (Federated States of),Micronesia
+Republic of Moldova,Moldova
+The former Yugoslav Republic of Macedonia,North Macedonia
 Slovak Republic,Slovakia
 St. Kitts and Nevis,Saint Kitts and Nevis
 St. Lucia,Saint Lucia
@@ -22,8 +30,11 @@ St. Vincent and the Grenadines,Saint Vincent and the Grenadines
 Syrian Arab Republic,Syria
 Turkey,Türkiye
 Turkiye,Türkiye
+United Kingdom of Great Britain and Northern Ireland,United Kingdom
+United Republic of Tanzania,Tanzania
 United States of America,United States
 USA,United States
+Venezuela (Bolivarian Republic of),Venezuela
 "Venezuela, RB",Venezuela
 Viet Nam,Vietnam
 "Yemen, Rep.",Yemen
