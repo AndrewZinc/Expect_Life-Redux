@@ -5,7 +5,7 @@ Andorra,1,Social insurance system
 Angola,3,"Universal medical benefits,Social insurance system (cash maternity benefits),Employer-liability system (cash sickness benefits)"
 Antigua and Barbuda,1,Social insurance system
 Argentina,3,"Universal medical benefits,Social insurance system (cash maternity benefits),Social insurance system (cash medical benefits),Employer-liability system (cash sickness benefits)"
-Armenia,3,"Universal (birth or adoption grant),Universal medical benefits,Social insurance system (cash benefits),Social assistance system (maternity benefits)"
+Armenia,3,"Universal (birth grant),Universal (adoption grant),Universal medical benefits,Social insurance system (cash benefits),Social assistance system (maternity benefits)"
 Aruba,1,Social insurance system
 Australia,3,"Universal medical benefits,Employment-related system (parental benefits),Social assistance system (cash sickness benefits),Social assistance system (cash birth grants)"
 Austria,1,Social insurance system
@@ -46,7 +46,7 @@ Cyprus,1,Social insurance system
 Czechia,1,Social insurance system
 Democratic Republic of the Congo,2,"Social insurance system (cash maternity benefits),Employer-liability system (cash sickness benefits),Employer-liability system (cash medical benefits)"
 Denmark,2,"Universal medical benefits,Employment-related system (cash benefits)"
-Djibouti,4,"Universal medical benefits,Social insurance system (maternity benefits),Social insurance system (medical benefits),Employer-liability system (sickness benefits),Employer-liability system (maternity benfits),Employer-liability system (paternity benefits),Social assistance system (medical benefits)"
+Djibouti,4,"Universal medical benefits,Social insurance system (maternity benefits),Social insurance system (medical benefits),Employer-liability system (sickness benefits),Employer-liability system (maternity benefits),Employer-liability system (paternity benefits),Social assistance system (medical benefits)"
 Dominica,1,Social insurance system (cash benefits)
 Dominican Republic,2,"Social insurance system (cash benefits),Social insurance system (medical benefits),Social assistance system (medical benefits)"
 Ecuador,2,"Social insurance system (cash benefits),Social insurance system (medical benefits),Employer-liability system (cash maternity benefits)"
@@ -140,7 +140,7 @@ Romania,2,"Social insurance system (cash benefits),Social insurance system (medi
 Russian Federation,1,Social insurance system
 Rwanda,2,"Social insurance system (cash maternity benefits),Social insurance system (cash medical benefits),Employer-liability system (cash sickness benefits),Employer-liability system (maternity benefits)"
 Saint Lucia,1,Social insurance system
-Saint Kitts and Nevis,1,Social insurance system (cash benefits only)
+Saint Kitts and Nevis,1,Social insurance system (cash benefits)
 Saint Vincent and the Grenadines,2,"Universal medical benefits,Social insurance system (cash benefits)"
 Samoa,1,Employer-liability system (cash benefits)
 San Marino,2,"Universal medical benefits,Social insurance system (cash benefits)"
