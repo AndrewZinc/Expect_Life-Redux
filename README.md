@@ -68,11 +68,9 @@ Input data was collected, reviewed, cleaned and consolidated. As a final step in
 ### The Database:  [MongoDB Cloud Database](https://www.mongodb.com/)
 This was the best option for the gathering and processing of data for this project. Using a non-relational database enabled easy setup and data access.
 
-![Database Data](./Resources/database_data1.png)
-
 The data is organized into collections according to the intended use of the information.
 
-![Database Data](./Resources/database_data-detail.png)
+![Database Data](./Resources/database-ELR_Data.png)
 
 
 Below is a list of features identified for this analysis.
@@ -100,6 +98,22 @@ Below is a list of features identified for this analysis.
 
 ### Supervised Machine Learning Model
 * Machine Learning Model - will evaluate the data features and provide information about the feature importance.
+#### Model Implementation
+The supervised model processes the input data to predict the life expectancy values. The model was defined as a PyTorch Neural Network to enable accelerated processing via the available GPU resources.
+![GPU Acceleration](./Resources/Supervised_GPU_Usage.png)
+
+The Neural Network was defined with dropout layers to reduce the likelihood of overfitting.
+![Neural Network Definition](./Resources/Supervised_Model_Definition.png)
+
+The Model was evaluated according to the accuracy of the predictions against the test labels.
+![NN Evaluation](./Resources/Supervised_Model_Loss.png)
+
+Computing additional metrics revealed that the neural network had powerful prediction capabilities against the test data.
+![NN Performance Metrics](./Resources/Supervised_Model_Metrics.png)
+
+The actual test values were plotted against the predicted values to visualize the results and performance. There is a linear correlation of the output with no outliers, indicating high accuracy against unknown data.
+![NN Output Plotting](./Resources/Plotly-Actuals_vs_Predictions_Plot.png)
+
 
 ### Clustering Machine Learning Model
 The Clustering Analysis seeks to confirm the importance of the features that are identified by the Supervised Machine Learning model.
@@ -122,30 +136,11 @@ A key factor in the clustering analysis was the structure of the Social Security
 An initial review of popular clustering models was perfomed, and several Jupyter notebooks were created to generate data for side-by-side comparison of the model output.  The analysis was performed using different Primary Component Analysis methods (PCA, IPCA, and KernelIPCA) as well as different scalers (StandardScaler, MinMaxScaler, and RobustScaler).
 
 The models examined were:
-* KMeans
-* Agglomerative Clustering (linkage=complete)
-* Agglomerative Clustering (linkage=ward)
-* BIRCH
-* DBSCAN
-* Mean Shift
-* OPTICS
-* Spectral Clustering
-* Gaussian Mixture Model
+* KMedoids
+* HDBSCAN
 
-The results of this preliminary analysis lead to focused examination of:
-* Agglomerative Clustering (linkage=ward)
-* BIRCH
-* Gaussian Mixture Model
-* KMeans
-* Spectral Clustering
-
-This focused analysis was performed with standard PCA and two different scalers (MinMaxScaler and RobustScaler).  From these new results, MinMaxScaler was selected for final analysis with the BIRCH model.
-
-During the final analysis, the input data was synchronized with the Supervised machine learning model input, both for the volume of data and its contents.  This final analysis was performed through two different Jupyter notebooks and after the analysis was completed, a Sweetviz report was generated to view details of the features and the associations within them.
-
-Single year (latest data) Sweetviz report: [Single Year Sweetviz Report](./Machine_Learning/Final_Results/Final_Report.html)
-
-Multi-year Sweetviz report: [Multi-year Sweetviz Report](./Machine_Learning/Final_Results/MultiYearReport.html)
+## Primary Feature Analysis
+This part of the project is still in-progress.
 
 
 
@@ -163,3 +158,7 @@ TBD
 * [CIA - The World Factbook](https://www.cia.gov/the-world-factbook/)
 
 ISSA is the world’s leading international organization for social security institutions, government departments and agencies.  The ISSA compiles international country profiles with information about the scope and breadth of each country's social security program(s).  They provided the type of system employed by each of the countries in this study, as well as the definitions of the system types.  Links to the country profiles are included within the [Country Profile Urls](./Clean_Data/master_country_list/country_profile_urls.csv) file.
+
+## References
+
+The following collection of research papers inspired the exploration into Primary Feature Analysis.
