@@ -14,7 +14,7 @@ During data exploration, there was only healthcare system data available for les
 This study focuses on the social security programs associated with health (Sickness and Maternity) but can include information about retirement systems, such as for North Macedonia, where the country does not indicate a separate social security system for health.
 
 # Expect Life Redux - Project Overview and Purpose
-This project continues the previous research, but includes additional data with different processing techniques. The main goal of the project is to attempt to ascertain whether social security systems (or individual components) are connected to human life expectancy. This project also introduces the type of government into the analysis for exploration.
+This solo project continues the previous team research, but includes additional data with different processing techniques. The main goal of the project is to attempt to ascertain whether social security systems (or individual components) are connected to human life expectancy. This project also introduces the type of government into the analysis for exploration.
 
 ## Project Sub-purpose
 As the clustering analysis was underway, it was discovered that there is on-going research into the methods for reducing data dimensionality for clustering and for subsequent visualization. Because of the relevance of this topic to the desired analysis, this became a new goal for the project. The project is performing a high-level comparison of the impact of no dimensionality reduction vs. Principal Component Analysis vs. Primary Feature Analysis.
