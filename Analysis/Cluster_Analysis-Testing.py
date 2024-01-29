@@ -11,12 +11,12 @@ from numba.typed import List
 from sklearn.datasets import make_classification
 from sklearn_extra.cluster import KMedoids
 from sklearn.cluster import HDBSCAN
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import davies_bouldin_score, silhouette_score
 
 from matplotlib import pyplot as plt
 
 # ## Create a test dataset
-X, y = make_classification(n_samples=175, n_features=14, n_informative=4, n_redundant=4, n_repeated=6, n_classes=2, n_clusters_per_class=2, weights=None, flip_y=0.01, class_sep=2.0, hypercube=True, shift=0.0, scale=1.0, shuffle=True, random_state=42) 
+X, y = make_classification(n_samples=175, n_features=9, n_informative=4, n_redundant=1, n_repeated=4, n_classes=2, n_clusters_per_class=3, weights=None, flip_y=0.01, class_sep=8.0, hypercube=True, shift=0.0, scale=1.0, shuffle=True, random_state=42) 
 
 plt.scatter(X[:,0], X[:,1])
 plt.show()
@@ -41,7 +41,6 @@ test_np = test_df.to_numpy()
 # Custom processing function to override limitations of Numba compatibility with Numpy features
 @numba.jit(nopython=True)
 def custom_mean(arr, axis=0):
-    print('    Entered custom_mean ')
     if arr.ndim == 1:
         return arr.sum() / arr.shape[0]
     elif arr.ndim == 2:
@@ -52,9 +51,17 @@ def custom_mean(arr, axis=0):
     raise ValueError("custom_mean function received an array that it can't handle with axis = {}")
 
 # =============================================================================
+# Function: Davies-Bouldin Score Calculation
+def calculate_davies_bouldin(np_array, labels):
+    if len(np.unique(labels)) > 1:
+        davies_bouldin = davies_bouldin_score(np_array, labels)
+        return davies_bouldin
+    else:
+        return 0
+
+# =============================================================================
 # Function: Silhouette Coefficient Calculation
 def calculate_silhouette(np_array, labels):
-    print('   Entered calculate_silhouette ')
     if len(np.unique(labels)) > 1:
         silhouette_val = silhouette_score(np_array, labels)
         return silhouette_val
@@ -64,7 +71,6 @@ def calculate_silhouette(np_array, labels):
 # =============================================================================
 # Function: Scatter Separability Calculation
 def calculate_scatter_separability(np_array, labels):
-    print('   Entered calculate_scatter_separability ')
     unique_labels = np.unique(labels)
     n_features = np_array.shape[1]
     overall_mean = custom_mean(np_array, axis=0)
@@ -88,72 +94,58 @@ def calculate_scatter_separability(np_array, labels):
 
     return final_ssc
 
-
-
 # =============================================================================
 # Function: Normalization of criterion values to remove bias due to number of clusters - Numba acceleration
 @numba.jit(nopython=True)
-def cross_projection_normalization(original_data_np, cluster_labels, scatter_criteria_score, silhouette_criteria_score):
+def cross_projection_normalization(clustering_medoids, scatter_criteria_score, silhouette_criteria_score, davies_bouldin_score, inertia):
     print('   Entered cross_projection_normalization ')
-    normalized_score = 0
-    unique_labels = np.unique(cluster_labels)
-    for uni_lab in unique_labels:
-        print(f'    CPN - Unique Labels = {uni_lab}')
-    n_clusters = len(unique_labels)
-    print(f'    CPN - Number of Clusters - {n_clusters}')
+    n_clusters = len(clustering_medoids)
     projections = np.zeros((n_clusters, n_clusters))
 
     for j in range(n_clusters):
-        for k in range(j+1, n_clusters):
-            matching_labels = np.intersect1d(unique_labels[j], unique_labels[k])
-            matching_labels = matching_labels[matching_labels != -1] # Remove noise labels (-1)
+        for k in range(j + 1, n_clusters):
+            medoid_j = clustering_medoids[j]
+            medoid_k = clustering_medoids[k]
+            distance = np.linalg.norm(medoid_j - medoid_k)
+            projections[j][k] = distance
+            projections[k][j] = distance
 
-            distances = np.zeros(len(matching_labels))
+    # Flatten the array and filter non-zero distances then calculate the mean
+    flat_projections = projections.ravel()
+    non_zero_projections = flat_projections[flat_projections > 0]
+    mean_projection = np.mean(non_zero_projections)
 
-            for idx, label in enumerate(matching_labels):
-                print('    CPN -- Entered idx, label for-loop ')
-                mask_j = cluster_labels == label  # Mask original data_np directly
-                mask_k = cluster_labels == label
-                print(f'    CPN ---- mask_j.sum = {mask_j.sum()}   mask_k.sum = {mask_k.sum()} +_+_+_+_==========')
-                if mask_j.sum() > 0 and mask_k.sum() > 0:
-                    centroid_j = custom_mean(original_data_np[mask_j, :], axis=0)
-                    centroid_k = custom_mean(original_data_np[mask_k, :], axis=0)
-                    distances[idx] = np.linalg.norm(centroid_j - centroid_k)
+    # Normalizing the criteria scores with the mean of projections
+    # Adjusting the formula to consider Davies-Bouldin Score and Inertia
+    # Recall: For Davies-Bouldin, lower is better; same goes for Inertia.
+    # We add 1 to the Davies-Bouldin score to ensure it doesn't lead to division by zero or negative values.
+    # Since inertia could be very large, we normalize it by dividing by the number of samples (normalized_inertia).
+    # Adjust the inertia scaling factor as necessary to fit the scale of your data.
+    normalized_inertia = inertia / (1 + mean_projection)
+    # Combined normalization factor incorporates all metrics.
+    normalization_factor = (1 + mean_projection + davies_bouldin_score + normalized_inertia) 
 
-            print(f'    CPN - Distance Size = {distances.size}')
-            if distances.size > 0:
-                projection = custom_mean(distances)
-                print(f'    CPN - Projection = {projection}')
-                projections[j][k] = projection
-                projections[k][j] = projection
-
-                normalized_value = (scatter_criteria_score + silhouette_criteria_score) / 2 * projections[j][k]
-                normalized_score += normalized_value
-            else:
-                print('    CPN -- Entered final else-clause to compute normalized score ')
-                normalized_value = (scatter_criteria_score + silhouette_criteria_score) / 2
-                normalized_score += normalized_value
+    normalized_score = (scatter_criteria_score + silhouette_criteria_score) / normalization_factor
 
     return normalized_score
 
 # =============================================================================
 # Helper function for Sequential Forward Search
-def evaluate_feature_subset(subset_array, np_array, cluster_labels):
-    print('  Entered evaluate_feature_subset ')
+def evaluate_feature_subset(subset_array, np_array, cluster_labels, clustering_medoids, inertia):
     scatter_separability = calculate_scatter_separability(subset_array, cluster_labels)
     silhouette_score = calculate_silhouette(subset_array, cluster_labels)
-    normalized_score = cross_projection_normalization(subset_array, cluster_labels, scatter_separability, silhouette_score)
+    davies_bouldin_score = calculate_davies_bouldin(subset_array, cluster_labels)
+    normalized_score = cross_projection_normalization(clustering_medoids, scatter_separability, silhouette_score, davies_bouldin_score, inertia)
 
     return normalized_score
 
 # =============================================================================
 # Function that evaluates different numbers of clusters to locate the optimal value
 def optimal_feature_clusters(np_array, clustering_algorithm):
-    print(' Entered optimal_feature_clusters ')
     np_array_feature_indices = np_array.shape[1]
     available_indices = List(range(np_array_feature_indices))  # Initial list of available indices
     temp_random_indices = available_indices.copy()
-    initial_k = np.array([2, 3, 4, 5])
+    initial_k = np.array([2, 3, 4, 6, 7])
     selected_features = List()
     random.seed(42)
 
@@ -168,9 +160,9 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
         print(f' Best K = {init_k}')
 
         if clustering_algorithm == 'kmedoids':
-            clustering_instance = KMedoids(n_clusters=init_k, init='k-medoids++', max_iter=500, random_state=42)          
+            clustering_instance = KMedoids(n_clusters=init_k, init='k-medoids++', max_iter=750, random_state=42)          
         elif clustering_algorithm == 'hdbscan':
-            clustering_instance = HDBSCAN(min_cluster_size=10, min_samples=20, cluster_selection_method='eom', allow_single_cluster='True', n_jobs=-1)
+            clustering_instance = HDBSCAN(min_cluster_size=10, min_samples=20, cluster_selection_method='eom', store_centers="medoid", allow_single_cluster='True', n_jobs=-1)
         else:
             raise ValueError("Unsupported clustering algorithm")
 
@@ -181,8 +173,10 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
                 # Process each individual feature
                 subset_array = np_array[:, [random_idx]]
                 current_labels = clustering_instance.fit_predict(subset_array)
+                clustering_medoids = clustering_instance.cluster_centers_
+                inertia = clustering_instance.inertia_
                 # Score the feature                  
-                normalized_score = evaluate_feature_subset(subset_array, np_array, current_labels)
+                normalized_score = evaluate_feature_subset(subset_array, np_array, current_labels, clustering_medoids, inertia)
         
                 # Update best feature if necessary
                 if normalized_score > best_score:
@@ -212,9 +206,11 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
                 print(f' Evaluate combined features - current feature = {i} ')
                 combination_array = np.hstack([np_array[:, [i]], np_array[:, selected_features]])
                 current_labels = clustering_instance.fit_predict(combination_array)
+                clustering_medoids = clustering_instance.cluster_centers_
+                inertia = clustering_instance.inertia_
     
                 # Score the combination            
-                normalized_score = evaluate_feature_subset(combination_array, np_array, current_labels)
+                normalized_score = evaluate_feature_subset(subset_array, np_array, current_labels, clustering_medoids, inertia)
                 print(f'*** Normalized score = {normalized_score}   ::::   Best Score = {best_combination_score} ***')
     
                 # Update best combination if necessary
@@ -232,15 +228,14 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
                 print('xxxxx  No further progress >>>> Moving to next K >>>>>>>')
 
         evaluate = False
+        print(' Processing completed ')
 
     return best_k, selected_features
 
 
 # =============================================================================
 # Main Function
-def feature_selection_and_clustering(np_array, clustering_algorithm, max_clusters=145):
-    print('Entered feature_selection_and_clustering ')
-    
+def feature_selection_and_clustering(np_array, clustering_algorithm):
     best_k, best_features = optimal_feature_clusters(np_array, clustering_algorithm)
 
     return best_k, best_features
@@ -252,12 +247,11 @@ def feature_selection_and_clustering(np_array, clustering_algorithm, max_cluster
 # Start timing
 start = time.perf_counter()
 
-best_kmedoid_features = []
-
 # Run the experiment using the complete (non-pca) dataframe and identify the clustering algorithm by name.
 best_k, best_kmedoid_features = feature_selection_and_clustering(test_np, 'kmedoids')
 
-print(best_kmedoid_features)
+print(f' Best k = {best_k}')
+print(f' Best features = {best_kmedoid_features}')
 # Stop timing
 stop = time.perf_counter()
 
