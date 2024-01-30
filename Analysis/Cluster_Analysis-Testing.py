@@ -11,12 +11,12 @@ from numba.typed import List
 from sklearn.datasets import make_classification
 from sklearn_extra.cluster import KMedoids
 from sklearn.cluster import HDBSCAN
-from sklearn.metrics import davies_bouldin_score, silhouette_score
+from sklearn.metrics import davies_bouldin_score, silhouette_score, calinski_harabasz_score
 
 from matplotlib import pyplot as plt
 
 # ## Create a test dataset
-X, y = make_classification(n_samples=175, n_features=9, n_informative=4, n_redundant=1, n_repeated=4, n_classes=2, n_clusters_per_class=3, weights=None, flip_y=0.01, class_sep=8.0, hypercube=True, shift=0.0, scale=1.0, shuffle=True, random_state=42) 
+X, y = make_classification(n_samples=1000, n_features=50, n_informative=12, n_redundant=36, n_repeated=2, n_classes=2, n_clusters_per_class=4, weights=None, flip_y=0.01, class_sep=6.06109, hypercube=True, shift=0.09384, scale=.345868973, shuffle=True, random_state=42) 
 
 plt.scatter(X[:,0], X[:,1])
 plt.show()
@@ -49,6 +49,15 @@ def custom_mean(arr, axis=0):
         elif axis == 1:
             return arr.sum(axis=1) / arr.shape[1]
     raise ValueError("custom_mean function received an array that it can't handle with axis = {}")
+
+# =============================================================================
+# Function: Calinski Harbasz Score Calculation
+def calculate_calinski_harbasz(np_array, labels):
+    if len(np.unique(labels)) > 1:
+        calinski_harbasz = calinski_harabasz_score(np_array, labels)
+        return calinski_harbasz
+    else:
+        return 0
 
 # =============================================================================
 # Function: Davies-Bouldin Score Calculation
@@ -97,7 +106,7 @@ def calculate_scatter_separability(np_array, labels):
 # =============================================================================
 # Function: Normalization of criterion values to remove bias due to number of clusters - Numba acceleration
 @numba.jit(nopython=True)
-def cross_projection_normalization(clustering_medoids, scatter_criteria_score, silhouette_criteria_score, davies_bouldin_score, inertia):
+def cross_projection_normalization(clustering_medoids, scatter_criteria_score, silhouette_criteria_score, davies_bouldin_score, calinski_harbasz_index):
     print('   Entered cross_projection_normalization ')
     n_clusters = len(clustering_medoids)
     projections = np.zeros((n_clusters, n_clusters))
@@ -116,26 +125,24 @@ def cross_projection_normalization(clustering_medoids, scatter_criteria_score, s
     mean_projection = np.mean(non_zero_projections)
 
     # Normalizing the criteria scores with the mean of projections
-    # Adjusting the formula to consider Davies-Bouldin Score and Inertia
-    # Recall: For Davies-Bouldin, lower is better; same goes for Inertia.
+    # Adjusting the formula to consider Davies-Bouldin Score. Recall: For Davies-Bouldin, lower is better.
     # We add 1 to the Davies-Bouldin score to ensure it doesn't lead to division by zero or negative values.
-    # Since inertia could be very large, we normalize it by dividing by the number of samples (normalized_inertia).
-    # Adjust the inertia scaling factor as necessary to fit the scale of your data.
-    normalized_inertia = inertia / (1 + mean_projection)
-    # Combined normalization factor incorporates all metrics.
-    normalization_factor = (1 + mean_projection + davies_bouldin_score + normalized_inertia) 
 
-    normalized_score = (scatter_criteria_score + silhouette_criteria_score) / normalization_factor
+    # Combined normalization factor incorporates all metrics.
+    normalization_factor = (1 + mean_projection + davies_bouldin_score) 
+
+    normalized_score = (scatter_criteria_score + silhouette_criteria_score + calinski_harbasz_index) / normalization_factor
 
     return normalized_score
 
 # =============================================================================
 # Helper function for Sequential Forward Search
-def evaluate_feature_subset(subset_array, np_array, cluster_labels, clustering_medoids, inertia):
+def evaluate_feature_subset(subset_array, np_array, cluster_labels, clustering_medoids):
     scatter_separability = calculate_scatter_separability(subset_array, cluster_labels)
     silhouette_score = calculate_silhouette(subset_array, cluster_labels)
     davies_bouldin_score = calculate_davies_bouldin(subset_array, cluster_labels)
-    normalized_score = cross_projection_normalization(clustering_medoids, scatter_separability, silhouette_score, davies_bouldin_score, inertia)
+    calinski_harbasz_index = calculate_calinski_harbasz(subset_array, cluster_labels)
+    normalized_score = cross_projection_normalization(clustering_medoids, scatter_separability, silhouette_score, davies_bouldin_score, calinski_harbasz_index)
 
     return normalized_score
 
@@ -144,59 +151,59 @@ def evaluate_feature_subset(subset_array, np_array, cluster_labels, clustering_m
 def optimal_feature_clusters(np_array, clustering_algorithm):
     np_array_feature_indices = np_array.shape[1]
     available_indices = List(range(np_array_feature_indices))  # Initial list of available indices
-    temp_random_indices = available_indices.copy()
+    n_features = len(available_indices)
     initial_k = np.array([2, 3, 4, 6, 7])
-    selected_features = List()
+    interim_features = List()
     random.seed(42)
-
     evaluate = True
-    first_pass = True
     init_k = 2
     best_k = init_k
-    best_score = -np.inf
-    best_feature_index = None
+    best_score = 0
+    processed_features = 0
 
     while evaluate:     # Simple test to enable and continue evaluation.
         print(f' Best K = {init_k}')
 
         if clustering_algorithm == 'kmedoids':
-            clustering_instance = KMedoids(n_clusters=init_k, init='k-medoids++', max_iter=750, random_state=42)          
+            clustering_instance = KMedoids(n_clusters=init_k, init='k-medoids++', metric='manhattan', random_state=42)          
         elif clustering_algorithm == 'hdbscan':
             clustering_instance = HDBSCAN(min_cluster_size=10, min_samples=20, cluster_selection_method='eom', store_centers="medoid", allow_single_cluster='True', n_jobs=-1)
         else:
             raise ValueError("Unsupported clustering algorithm")
 
-        while first_pass:
-            # Select the best feature to start the evaluation
-            while temp_random_indices:
-                random_idx = random.choice(temp_random_indices)
-                # Process each individual feature
-                subset_array = np_array[:, [random_idx]]
-                current_labels = clustering_instance.fit_predict(subset_array)
-                clustering_medoids = clustering_instance.cluster_centers_
-                inertia = clustering_instance.inertia_
-                # Score the feature                  
-                normalized_score = evaluate_feature_subset(subset_array, np_array, current_labels, clustering_medoids, inertia)
+        while processed_features < 0.8 * n_features:
+                starter_set = np.random.choice(n_features, size=max(1, int(0.1 * n_features)))
+                best_feature = None
+                best_score = -np.inf
         
-                # Update best feature if necessary
-                if normalized_score > best_score:
-                    best_score = normalized_score
-                    best_feature_index = random_idx
+                for feature in range(n_features):
+                    if feature not in starter_set:
+                        combined_features = np.concatenate([starter_set, [feature]])
+                        subset_array = np.hstack([np_array[:, combined_features]])
+                        current_labels = clustering_instance.fit_predict(subset_array)
+                        clustering_medoids = clustering_instance.cluster_centers_
+                        # Score the feature                  
+                        normalized_score = evaluate_feature_subset(subset_array, np_array, current_labels, clustering_medoids)
+        
+                        # Update best feature if necessary
+                        if normalized_score > best_score:
+                            best_score = normalized_score
+                            best_feature = feature
+        
+                #if feature not in interim_features:
+                interim_features.append(best_feature)
+                    
+                processed_features += len(starter_set)  # Account for multiple features in starter set
+                print(f' Processed Features = {processed_features}')
+        best_combination_score = best_score
                 
-                temp_random_indices.remove(random_idx)
-    
-            # Add best feature to selected features and remove its index from available indices
-            selected_features.append(best_feature_index)
-            available_indices.remove(best_feature_index)
-            best_combination_score = best_score
-            first_pass = False # Set the flag to prevent a rerun of the initial feature selection.
             
-        print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Initial feature identified - continuing with combination evaluation ^^^^^^^^^^^^^^^^^^^^^^^^')
+        print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Initial features identified - continuing with combination evaluation ^^^^^^^^^^^^^^^^^^^^^^^^')
         
         for init_k in initial_k:
             if clustering_algorithm == 'kmedoids':
                 print(f'****** k-value set to {init_k} ***************************')
-                clustering_instance = KMedoids(n_clusters=init_k, init='k-medoids++', random_state=42)  
+                clustering_instance = KMedoids(n_clusters=init_k, init='k-medoids++', metric='manhattan', random_state=42)  
             # Process combinations with the current selected features
 
             best_add = None
@@ -204,13 +211,12 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
             for i in available_indices:
                 # Create combination subset
                 print(f' Evaluate combined features - current feature = {i} ')
-                combination_array = np.hstack([np_array[:, [i]], np_array[:, selected_features]])
+                combination_array = np.hstack([np_array[:, [i]], np_array[:, interim_features]])
                 current_labels = clustering_instance.fit_predict(combination_array)
                 clustering_medoids = clustering_instance.cluster_centers_
-                inertia = clustering_instance.inertia_
     
                 # Score the combination            
-                normalized_score = evaluate_feature_subset(subset_array, np_array, current_labels, clustering_medoids, inertia)
+                normalized_score = evaluate_feature_subset(combination_array, np_array, current_labels, clustering_medoids)
                 print(f'*** Normalized score = {normalized_score}   ::::   Best Score = {best_combination_score} ***')
     
                 # Update best combination if necessary
@@ -222,7 +228,7 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
     
             # If a better combination was found, add its feature to selected features
             if best_add is not None:
-                selected_features.append(best_add)
+                interim_features.append(best_add)
                 available_indices.remove(best_add)
             else:
                 print('xxxxx  No further progress >>>> Moving to next K >>>>>>>')
@@ -230,7 +236,7 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
         evaluate = False
         print(' Processing completed ')
 
-    return best_k, selected_features
+    return best_k, interim_features
 
 
 # =============================================================================
