@@ -1,5 +1,4 @@
 # Import the dependencies
-#from pyinstrument import Profiler
 import sys
 import pandas as pd
 import numpy as np
@@ -16,7 +15,7 @@ from sklearn.metrics import davies_bouldin_score, silhouette_score, calinski_har
 from matplotlib import pyplot as plt
 
 # ## Create a test dataset
-X, y = make_classification(n_samples=1000, n_features=50, n_informative=12, n_redundant=36, n_repeated=2, n_classes=2, n_clusters_per_class=4, weights=None, flip_y=0.01, class_sep=6.06109, hypercube=True, shift=0.09384, scale=.345868973, shuffle=True, random_state=42) 
+X, y = make_classification(n_samples=5000, n_features=50, n_informative=12, n_redundant=38, n_repeated=0, n_classes=2, n_clusters_per_class=2, weights=None, flip_y=0.01, class_sep=6.06109, hypercube=True, shift=0.09384, scale=.345868973, shuffle=True, random_state=42) 
 
 plt.scatter(X[:,0], X[:,1])
 plt.show()
@@ -32,10 +31,6 @@ test_np = test_df.to_numpy()
 
 # #### Define functions to select dataset features that provide relevant information for clustering. 
 # ##### Only important features are used to compute clusters from the complete (non-pca) dataset.
-
-#profiler = Profiler()
-#profiler.start()
-
 
 # =============================================================================
 # Custom processing function to override limitations of Numba compatibility with Numpy features
@@ -152,8 +147,8 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
     np_array_feature_indices = np_array.shape[1]
     available_indices = List(range(np_array_feature_indices))  # Initial list of available indices
     n_features = len(available_indices)
-    initial_k = np.array([2, 3, 4, 6, 7])
-    interim_features = List()
+    initial_k = np.array([2, 3, 4, 6, 7, 8, 9, 10])
+    interim_features = []
     random.seed(42)
     evaluate = True
     init_k = 2
@@ -177,7 +172,7 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
                 best_score = -np.inf
         
                 for feature in range(n_features):
-                    if feature not in starter_set:
+                    if feature not in starter_set and feature not in interim_features:  # Check for both conditions
                         combined_features = np.concatenate([starter_set, [feature]])
                         subset_array = np.hstack([np_array[:, combined_features]])
                         current_labels = clustering_instance.fit_predict(subset_array)
@@ -190,8 +185,9 @@ def optimal_feature_clusters(np_array, clustering_algorithm):
                             best_score = normalized_score
                             best_feature = feature
         
-                #if feature not in interim_features:
-                interim_features.append(best_feature)
+                # Ensure best_feature is not already in interim_features before appending
+                if best_feature is not None and best_feature not in interim_features:
+                    interim_features.append(best_feature)
                     
                 processed_features += len(starter_set)  # Account for multiple features in starter set
                 print(f' Processed Features = {processed_features}')
