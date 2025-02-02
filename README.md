@@ -11,7 +11,6 @@ There are continuing discussions in American politics about the need for changes
 #### A Caveat:    
 During data exploration, there was only healthcare system data available for less than half of the world's nations.  However, there is sufficient information available for the majority of the world's social security systems.  These social security systems include healthcare as well as providing money for retirement and assistance for accidents and emergencies.
 
-This study focuses on the social security programs associated with health (Sickness and Maternity) but can include information about retirement systems, such as for North Macedonia, where the country does not indicate a separate social security system for health.
 
 # Expect Life Redux - Project Overview and Purpose
 This solo project continues the previous team research, but includes additional data with different processing techniques. The main goal of the project is to attempt to ascertain whether social security systems (or individual components) are connected to human life expectancy. This project also introduces the type of government into the analysis for exploration.
@@ -38,7 +37,7 @@ Input data was sourced from multiple locations:
 * Life Expectancy and other world development indicator data was collected from the World Bank
 * Food data was collect from the United Nations Food and Agriculture Organization 
 * Social Security system data was collected from ISSA (International Social Security Association)
-* Government system data was collected from the CIA (United States Central Intelligence Agency)
+* Government system data was collected from the CIA (United States Central Intelligence Agency). Historical government system data was also collected from the U.S. Department of State website.
 
 ### Input Data Issues
 
@@ -49,7 +48,7 @@ The following types of input data issues were frequently encountered:
 
 #### Identifying Data Sources - Gathering Data
 ##### Social Security System Data
-The social security system data from the ISSA was revisited to determine if there were any recent data updates. This review required updates to the web scraping process as the ISSA site is undergoing changes that prevented the previous project code from collecting information from all of the country profile pages. After collecting this fresh data, a comparison of the output revealed that no updates had been published.
+(Updated January 2025) This study focuses on the social security programs associated with health. With  ongoing updates to the ISSA website, it is no longer possible to programaticallyk retrieve information from their Country Profile pages. The most recent information is accessed via downloadable PDF documents from the corresponding Country Profile page. These PDF documents represent the latest updates from 2022 to 2023 and appear to have more comprehensive information. Now, for this project the social security information that is used, resides within two primary information branches: "Health and long-term care benefits", and "Sickness and maternity". In all instances, the type of system (according to the ISSA) is used to identify the program that is in place for the country's services. The reason for this is that a number of countries have named their systems as "Universal", when in fact there are costs for services that are charged to recipients, perhaps as copays or co-insurance. The ISSA indicates that most of these systems are of the "Social insurance" or "Private insurance" types, so that is what this project uses for the analysis.
 
 ##### Government System Data
 The CIA publishes data about nations around the world, and in particular, identifies the type of government system that is active within each country. Similar to the social security system data, collecting the government system data involved web scraping the available data. This data was then aligned to the countries that also have social security system data available via the ISSA. 
@@ -156,6 +155,7 @@ TBD
 * [United Nation's Food and Agriculture Organization](https://www.fao.org/faostat/en/#data/FS)
 * [ISSA - The International Social Security Association (ISSA)](https://ww1.issa.int/) 
 * [CIA - The World Factbook](https://www.cia.gov/the-world-factbook/)
+* [BTI - The Transformation Index analyzes transformation processes toward democracy and a market economy in international comparison and identifies successful strategies for peaceful change](https://bti-project.org/en/?&cb=00000)
 
 ISSA is the world’s leading international organization for social security institutions, government departments and agencies.  The ISSA compiles international country profiles with information about the scope and breadth of each country's social security program(s).  They provided the type of system employed by each of the countries in this study, as well as the definitions of the system types.  Links to the country profiles are included within the [Country Profile Urls](./Clean_Data/master_country_list/country_profile_urls.csv) file.
 
